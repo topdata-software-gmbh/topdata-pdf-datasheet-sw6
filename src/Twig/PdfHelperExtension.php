@@ -27,15 +27,29 @@ class PdfHelperExtension extends AbstractExtension
         }
 
         try {
-            $relativePath = null;
-            if (preg_match('#media/(.+)#', $path, $matches)) {
-                $relativePath = 'media/' . $matches[1];
+            $cleanPath = explode('?', $path, 2)[0];
+            $cleanPath = explode('#', $cleanPath, 2)[0];
+
+            $candidates = [];
+
+            if (preg_match('#/(media/.+)#', $cleanPath, $matches)) {
+                $candidates[] = $matches[1];
+                $candidates[] = preg_replace('#^media/#', '', $matches[1]);
             }
 
-            if ($relativePath && $this->publicFilesystem->has($relativePath)) {
-                $data = $this->publicFilesystem->read($relativePath);
-                $mimeType = $this->publicFilesystem->mimeType($relativePath) ?: 'image/png';
-                return 'data:' . $mimeType . ';base64,' . base64_encode($data);
+            if (preg_match('#^media/.+#', $cleanPath)) {
+                $candidates[] = $cleanPath;
+                $candidates[] = preg_replace('#^media/#', '', $cleanPath);
+            }
+
+            $candidates = array_unique(array_filter($candidates));
+
+            foreach ($candidates as $candidate) {
+                if ($this->publicFilesystem->has($candidate)) {
+                    $data = $this->publicFilesystem->read($candidate);
+                    $mimeType = $this->publicFilesystem->mimeType($candidate) ?: 'image/png';
+                    return 'data:' . $mimeType . ';base64,' . base64_encode($data);
+                }
             }
 
             $context = stream_context_create([
@@ -45,7 +59,7 @@ class PdfHelperExtension extends AbstractExtension
                 ]
             ]);
 
-            $data = @file_get_contents($path, false, $context);
+            $data = @file_get_contents($cleanPath, false, $context);
             if ($data === false || empty($data)) {
                 return '';
             }

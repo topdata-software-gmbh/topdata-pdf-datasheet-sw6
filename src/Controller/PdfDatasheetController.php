@@ -82,6 +82,8 @@ class PdfDatasheetController extends StorefrontController
         ]);
 
         if ($request->query->has('debug')) {
+            $debugFile = $this->cacheDir . '/topdata_pdf_datasheet_debug.html';
+            @file_put_contents($debugFile, $htmlContent);
             return new Response($htmlContent, Response::HTTP_OK, ['Content-Type' => 'text/html']);
         }
 
@@ -128,7 +130,9 @@ class PdfDatasheetController extends StorefrontController
         $criteria = new Criteria();
         $criteria->addFilter(new \Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter('productNumber', $productNumber));
         $criteria->addAssociation('media');
+        $criteria->addAssociation('media.media');
         $criteria->addAssociation('cover');
+        $criteria->addAssociation('cover.media');
         $criteria->addAssociation('properties.group');
         $criteria->addAssociation('manufacturer');
         $criteria->setLimit(1);
