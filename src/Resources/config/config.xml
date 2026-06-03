@@ -2,13 +2,75 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
     <card>
-        <title>Basic Configuration</title>
-        <title lang="de-DE">Grundeinstellungen</title>
-        
-        <input-field>
-            <name>example</name>
-            <label>Example Configuration</label>
-            <label lang="de-DE">Beispiel Konfiguration</label>
+        <title>Gotenberg Service Configuration</title>
+        <title lang="de-DE">Gotenberg Service-Konfiguration</title>
+
+        <input-field type="text">
+            <name>gotenbergUrl</name>
+            <label>Gotenberg Service URL</label>
+            <label lang="de-DE">Gotenberg Service-URL</label>
+            <defaultValue>http://localhost:3000</defaultValue>
+            <helpText>The base URL of the running Gotenberg Docker instance (e.g., http://gotenberg:3000).</helpText>
+            <helpText lang="de-DE">Die Basis-URL der laufenden Gotenberg-Docker-Instanz (z.B. http://gotenberg:3000).</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>pdfTheme</name>
+            <label>PDF Template Theme</label>
+            <label lang="de-DE">PDF-Template-Design</label>
+            <defaultValue>focus_shop</defaultValue>
+            <options>
+                <option>
+                    <id>minimal</id>
+                    <name>Minimalistic Grid</name>
+                    <name lang="de-DE">Minimalistisch</name>
+                </option>
+                <option>
+                    <id>focus_shop</id>
+                    <name>Focus Shop Brand Corporate Design</name>
+                    <name lang="de-DE">Focus Shop Corporate Design</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="bool">
+            <name>cacheEnabled</name>
+            <label>Enable HTTP Caching for PDF Routes</label>
+            <label lang="de-DE">HTTP-Caching für PDF-Routen aktivieren</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
+        <title>PDF Document Setup</title>
+        <title lang="de-DE">PDF-Dokumenteneinstellungen</title>
+
+        <input-field type="float">
+            <name>marginTop</name>
+            <label>Top Margin (inches)</label>
+            <label lang="de-DE">Oberer Rand (Zoll)</label>
+            <defaultValue>0.75</defaultValue>
+        </input-field>
+
+        <input-field type="float">
+            <name>marginBottom</name>
+            <label>Bottom Margin (inches)</label>
+            <label lang="de-DE">Unterer Rand (Zoll)</label>
+            <defaultValue>0.75</defaultValue>
+        </input-field>
+
+        <input-field type="float">
+            <name>marginLeft</name>
+            <label>Left Margin (inches)</label>
+            <label lang="de-DE">Linker Rand (Zoll)</label>
+            <defaultValue>0.5</defaultValue>
+        </input-field>
+
+        <input-field type="float">
+            <name>marginRight</name>
+            <label>Right Margin (inches)</label>
+            <label lang="de-DE">Rechter Rand (Zoll)</label>
+            <defaultValue>0.5</defaultValue>
         </input-field>
     </card>
 </config>

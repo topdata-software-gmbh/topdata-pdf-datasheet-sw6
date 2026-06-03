@@ -4,13 +4,19 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="Topdata\TopdataPdfDatasheetSW6\Controller\StorefrontExampleController" public="true">
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
+        <defaults autowire="true" autoconfigure="true" public="false"/>
+
+        <!-- Gotenberg Service Integration -->
+        <service id="Topdata\TopdataPdfDatasheetSW6\Service\GotenbergClient" public="true"/>
+
+        <!-- Custom Twig Utilities -->
+        <service id="Topdata\TopdataPdfDatasheetSW6\Twig\PdfHelperExtension">
+            <tag name="twig.extension"/>
         </service>
 
-        <service id="Topdata\TopdataPdfDatasheetSW6\Controller\AdminApiExampleController" public="true">
+        <!-- Main PDF Generator Controller -->
+        <service id="Topdata\TopdataPdfDatasheetSW6\Controller\PdfDatasheetController" public="true">
+            <argument type="service" key="$productRepository" id="sales_channel.product.repository"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
