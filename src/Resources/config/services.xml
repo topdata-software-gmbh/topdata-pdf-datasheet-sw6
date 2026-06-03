@@ -11,15 +11,23 @@
 
         <!-- Custom Twig Utilities -->
         <service id="Topdata\TopdataPdfDatasheetSW6\Twig\PdfHelperExtension">
+            <argument type="service" id="shopware.filesystem.public"/>
             <tag name="twig.extension"/>
         </service>
 
         <!-- Main PDF Generator Controller -->
         <service id="Topdata\TopdataPdfDatasheetSW6\Controller\PdfDatasheetController" public="true">
             <argument type="service" key="$productRepository" id="sales_channel.product.repository"/>
+            <argument type="string" key="$cacheDir">%kernel.cache_dir%</argument>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
+        </service>
+
+        <!-- CLI Commands -->
+        <service id="Topdata\TopdataPdfDatasheetSW6\Command\CacheClearCommand">
+            <argument type="string" key="$cacheDir">%kernel.cache_dir%</argument>
+            <tag name="console.command"/>
         </service>
     </services>
 </container>

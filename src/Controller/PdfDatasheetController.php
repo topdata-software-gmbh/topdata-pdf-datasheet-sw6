@@ -21,7 +21,8 @@ class PdfDatasheetController extends StorefrontController
     public function __construct(
         private readonly SalesChannelRepository $productRepository,
         private readonly GotenbergClient $gotenbergClient,
-        private readonly SystemConfigService $systemConfigService
+        private readonly SystemConfigService $systemConfigService,
+        private readonly string $cacheDir
     ) {}
 
     #[Route(
@@ -37,6 +38,23 @@ class PdfDatasheetController extends StorefrontController
         Request $request
     ): Response {
         $salesChannelId = $context->getSalesChannelId();
+        $theme = $this->systemConfigService->getString('TopdataPdfDatasheetSW6.config.pdfTheme', $salesChannelId) ?: 'focus_shop';
+
+        $diskCacheEnabled = $this->systemConfigService->getBool('TopdataPdfDatasheetSW6.config.diskCacheEnabled', $salesChannelId);
+        $diskCacheTtl = $this->systemConfigService->getInt('TopdataPdfDatasheetSW6.config.diskCacheTtl', $salesChannelId) ?: 86400;
+        $cacheEnabled = $this->systemConfigService->getBool('TopdataPdfDatasheetSW6.config.cacheEnabled', $salesChannelId);
+
+        $cacheFile = null;
+        if ($diskCacheEnabled && !$request->query->has('debug')) {
+            $cacheSubdir = $this->cacheDir . '/topdata_pdf_datasheet';
+            $cacheKey = md5($productNumber . '_' . $theme . '_' . $context->getLanguageId() . '_' . $salesChannelId);
+            $cacheFile = $cacheSubdir . '/' . $cacheKey . '.pdf';
+
+            if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $diskCacheTtl)) {
+                $pdfContent = file_get_contents($cacheFile);
+                return $this->createPdfResponse($pdfContent, $productNumber, $cacheEnabled, $theme);
+            }
+        }
 
         $product = $this->loadProductByNumber($productNumber, $context);
         if (!$product) {
@@ -44,8 +62,6 @@ class PdfDatasheetController extends StorefrontController
         }
 
         $gotenbergUrl = $this->systemConfigService->getString('TopdataPdfDatasheetSW6.config.gotenbergUrl', $salesChannelId);
-        $theme = $this->systemConfigService->getString('TopdataPdfDatasheetSW6.config.pdfTheme', $salesChannelId) ?: 'focus_shop';
-        $cacheEnabled = $this->systemConfigService->getBool('TopdataPdfDatasheetSW6.config.cacheEnabled', $salesChannelId);
 
         if (empty($gotenbergUrl)) {
             return new Response('Gotenberg Service URL is not configured.', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -75,6 +91,18 @@ class PdfDatasheetController extends StorefrontController
             return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        if ($diskCacheEnabled && $cacheFile) {
+            if (!is_dir(dirname($cacheFile))) {
+                @mkdir(dirname($cacheFile), 0755, true);
+            }
+            @file_put_contents($cacheFile, $pdfContent);
+        }
+
+        return $this->createPdfResponse($pdfContent, $productNumber, $cacheEnabled, $theme);
+    }
+
+    private function createPdfResponse(string $pdfContent, string $productNumber, bool $cacheEnabled, string $theme): Response
+    {
         $cleanFilename = sprintf('datasheet-%s.pdf', $productNumber);
         $disposition = HeaderUtils::makeDisposition(
             HeaderUtils::DISPOSITION_INLINE,

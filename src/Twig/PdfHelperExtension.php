@@ -2,11 +2,16 @@
 
 namespace Topdata\TopdataPdfDatasheetSW6\Twig;
 
+use League\Flysystem\FilesystemOperator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class PdfHelperExtension extends AbstractExtension
 {
+    public function __construct(
+        private readonly FilesystemOperator $publicFilesystem
+    ) {}
+
     public function getFilters(): array
     {
         return [
@@ -22,13 +27,15 @@ class PdfHelperExtension extends AbstractExtension
         }
 
         try {
-            if (!str_starts_with($path, 'http://') && !str_starts_with($path, 'https://')) {
-                $absolutePath = public_path($path);
-                if (file_exists($absolutePath)) {
-                    $data = file_get_contents($absolutePath);
-                    $type = mime_content_type($absolutePath) ?: 'image/png';
-                    return 'data:' . $type . ';base64,' . base64_encode($data);
-                }
+            $relativePath = null;
+            if (preg_match('#media/(.+)#', $path, $matches)) {
+                $relativePath = 'media/' . $matches[1];
+            }
+
+            if ($relativePath && $this->publicFilesystem->has($relativePath)) {
+                $data = $this->publicFilesystem->read($relativePath);
+                $mimeType = $this->publicFilesystem->mimeType($relativePath) ?: 'image/png';
+                return 'data:' . $mimeType . ';base64,' . base64_encode($data);
             }
 
             $context = stream_context_create([

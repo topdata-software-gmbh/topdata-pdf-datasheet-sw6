@@ -96,10 +96,32 @@
             padding: 15px;
             display: inline-block;
             max-width: 100%;
+            margin-bottom: 10px;
         }
         .product-image {
             max-width: 100%;
             max-height: 280px;
+            object-fit: contain;
+        }
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .thumbnail-card {
+            background-color: #ffffff;
+            border: 1px solid #c7c8c8;
+            border-radius: 4px;
+            padding: 5px;
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+        }
+        .thumbnail-image {
+            max-width: 100%;
+            max-height: 100%;
             object-fit: contain;
         }
         .section-heading {
@@ -126,6 +148,8 @@
             border-bottom: 1px solid #c7c8c8;
             padding: 10px 15px;
             border-radius: 0 4px 4px 0;
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
         .spec-label {
             font-family: 'Poppins', sans-serif;
@@ -146,6 +170,8 @@
             justify-content: space-between;
             font-size: 11px;
             color: #828384;
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
     </style>
 </head>
@@ -177,6 +203,18 @@
             {% if product.cover %}
                 <div class="image-card">
                     <img class="product-image" src="{{ product.cover.media.url|pdf_base64_image }}" alt="Product Cover Image">
+                </div>
+            {% endif %}
+
+            {% if product.media and product.media.count > 1 %}
+                <div class="thumbnail-container">
+                    {% for productMedia in product.media %}
+                        {% if not product.cover or productMedia.mediaId != product.cover.mediaId %}
+                            <div class="thumbnail-card">
+                                <img class="thumbnail-image" src="{{ productMedia.media.url|pdf_base64_image }}" alt="Product Thumbnail">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>

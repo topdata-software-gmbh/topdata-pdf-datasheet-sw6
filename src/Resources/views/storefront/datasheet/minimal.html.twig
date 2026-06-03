@@ -45,6 +45,21 @@
             object-fit: contain;
             border: 1px solid #eee;
             padding: 10px;
+            margin-bottom: 10px;
+        }
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+        .thumbnail-image {
+            max-width: 50px;
+            max-height: 50px;
+            object-fit: contain;
+            border: 1px solid #eee;
+            padding: 3px;
         }
         .section-title {
             font-size: 16px;
@@ -54,11 +69,17 @@
             margin: 25px 0 15px 0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
         .specs-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+        }
+        .specs-table tr {
+            break-inside: avoid;
+            page-break-inside: avoid;
         }
         .specs-table th, .specs-table td {
             padding: 8px 10px;
@@ -94,6 +115,16 @@
         <div class="col-side">
             {% if product.cover %}
                 <img class="product-image" src="{{ product.cover.media.url|pdf_base64_image }}" alt="Product Image">
+            {% endif %}
+
+            {% if product.media and product.media.count > 1 %}
+                <div class="thumbnail-container">
+                    {% for productMedia in product.media %}
+                        {% if not product.cover or productMedia.mediaId != product.cover.mediaId %}
+                            <img class="thumbnail-image" src="{{ productMedia.media.url|pdf_base64_image }}" alt="Product Thumbnail">
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
     </div>

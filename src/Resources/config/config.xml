@@ -42,6 +42,25 @@
     </card>
 
     <card>
+        <title>Disk-Based Cache Settings</title>
+        <title lang="de-DE">Festplatten-Cache Einstellungen</title>
+
+        <input-field type="bool">
+            <name>diskCacheEnabled</name>
+            <label>Enable Disk Caching</label>
+            <label lang="de-DE">Festplatten-Caching aktivieren</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+
+        <input-field type="int">
+            <name>diskCacheTtl</name>
+            <label>Disk Cache TTL (seconds)</label>
+            <label lang="de-DE">Festplatten-Cache TTL (Sekunden)</label>
+            <defaultValue>86400</defaultValue>
+        </input-field>
+    </card>
+
+    <card>
         <title>PDF Document Setup</title>
         <title lang="de-DE">PDF-Dokumenteneinstellungen</title>
 
