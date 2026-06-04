@@ -164,8 +164,19 @@ topdata-pdf-datasheet-sw6/
 
 1. Copy `src/Resources/views/storefront/datasheet/minimal.html.twig` as your starting point
 2. Use any CSS features — Chromium supports CSS Grid, Flexbox, custom fonts, `@page`, etc.
-3. Images must be inlined via the `|pdf_base64_image` Twig filter (the Chromium sandbox has no network access)
-4. Register your theme name in `config.xml` under the `pdfTheme` select options
+3. Configure explicit page margins via CSS `@page` to prevent overlaps with headers and footers:
+   ```css
+   @page {
+       size: A4;
+       margin-top: 35mm;   /* Leave room for header */
+       margin-bottom: 25mm;/* Leave room for footer */
+       margin-left: 20mm;
+       margin-right: 20mm;
+   }
+   ```
+4. Ensure custom header and footer templates define internal paddings matching the left and right margins of your main page, ensuring horizontal alignment.
+5. Images must be inlined via the `|pdf_base64_image` Twig filter (the Chromium sandbox has no network access).
+6. Register your theme name in `config.xml` under the `pdfTheme` select options.
 
 ---
 
