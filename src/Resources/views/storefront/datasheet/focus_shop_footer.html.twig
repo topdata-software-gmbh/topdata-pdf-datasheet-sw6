@@ -5,7 +5,7 @@
     <style>
         body {
             margin: 0;
-            padding: 0 0 25px 0;
+            padding: 0 {{ margins.marginRight|default(0.75) }}in 25px {{ margins.marginLeft|default(0.75) }}in;
             font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             font-size: 9px;
             color: #828384;

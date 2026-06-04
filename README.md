@@ -171,6 +171,13 @@ topdata-pdf-datasheet-sw6/
 2. Use any CSS features — Chromium supports CSS Grid, Flexbox, custom fonts, `@page`, etc.
 3. Images must be inlined via the `|pdf_base64_image` Twig filter (the Chromium sandbox has no network access)
 4. Register your theme name in `config.xml` under the `pdfTheme` select options
+5. To keep your custom header/footer layout aligned with the margins configured in the plugin config, use the injected `margins` variable to style the horizontal padding of your body elements:
+   ```css
+   body {
+       padding-left: {{ margins.marginLeft|default(0.75) }}in;
+       padding-right: {{ margins.marginRight|default(0.75) }}in;
+   }
+   ```
 
 ---
 

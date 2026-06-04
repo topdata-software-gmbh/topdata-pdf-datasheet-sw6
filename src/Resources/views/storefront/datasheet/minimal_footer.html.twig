@@ -5,7 +5,7 @@
     <style>
         body {
             margin: 0;
-            padding: 0 0 20px 0;
+            padding: 0 {{ margins.marginRight|default(0.75) }}in 20px {{ margins.marginLeft|default(0.75) }}in;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             font-size: 10px;
             color: #666666;

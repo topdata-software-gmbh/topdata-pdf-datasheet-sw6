@@ -87,7 +87,8 @@ class PdfDatasheetController extends StorefrontController
         try {
             $headerHtml = $this->renderView($headerTemplatePath, [
                 'product' => $product,
-                'context' => $context
+                'context' => $context,
+                'margins' => $margins
             ]);
         } catch (\Throwable) {
             // Header template does not exist or failed to render
@@ -97,7 +98,8 @@ class PdfDatasheetController extends StorefrontController
         try {
             $footerHtml = $this->renderView($footerTemplatePath, [
                 'product' => $product,
-                'context' => $context
+                'context' => $context,
+                'margins' => $margins
             ]);
         } catch (\Throwable) {
             // Footer template does not exist or failed to render
