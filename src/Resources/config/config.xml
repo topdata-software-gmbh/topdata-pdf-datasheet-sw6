@@ -68,28 +68,28 @@
             <name>marginTop</name>
             <label>Top Margin (inches)</label>
             <label lang="de-DE">Oberer Rand (Zoll)</label>
-            <defaultValue>0.75</defaultValue>
+            <defaultValue>1.2</defaultValue>
         </input-field>
 
         <input-field type="float">
             <name>marginBottom</name>
             <label>Bottom Margin (inches)</label>
             <label lang="de-DE">Unterer Rand (Zoll)</label>
-            <defaultValue>0.75</defaultValue>
+            <defaultValue>1.0</defaultValue>
         </input-field>
 
         <input-field type="float">
             <name>marginLeft</name>
             <label>Left Margin (inches)</label>
             <label lang="de-DE">Linker Rand (Zoll)</label>
-            <defaultValue>0.5</defaultValue>
+            <defaultValue>0.75</defaultValue>
         </input-field>
 
         <input-field type="float">
             <name>marginRight</name>
             <label>Right Margin (inches)</label>
             <label lang="de-DE">Rechter Rand (Zoll)</label>
-            <defaultValue>0.5</defaultValue>
+            <defaultValue>0.75</defaultValue>
         </input-field>
     </card>
 </config>
