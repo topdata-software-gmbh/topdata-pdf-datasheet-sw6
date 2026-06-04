@@ -6,6 +6,8 @@
         "manufacturer": "Manufacturer",
         "productNumber": "Product number",
         "description": "Product Description",
-        "brandClaim": "simply more personal"
+        "brandClaim": "simply more personal",
+        "page": "Page",
+        "pageOf": "of"
     }
 }

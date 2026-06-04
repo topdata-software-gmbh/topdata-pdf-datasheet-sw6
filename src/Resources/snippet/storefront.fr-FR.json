@@ -1,0 +1,13 @@
+{
+    "TopdataPdfDatasheetSW6": {
+        "buttonLabel": "Fiche technique PDF",
+        "titleText": "Détails techniques du produit",
+        "specsTitle": "Spécifications",
+        "manufacturer": "Fabricant",
+        "productNumber": "Numéro d'article",
+        "description": "Description du produit",
+        "brandClaim": "simplement plus personnel",
+        "page": "Page",
+        "pageOf": "sur"
+    }
+}

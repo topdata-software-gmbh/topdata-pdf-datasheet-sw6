@@ -6,6 +6,8 @@
         "manufacturer": "Hersteller",
         "productNumber": "Artikelnummer",
         "description": "Produktbeschreibung",
-        "brandClaim": "einfach persönlicher"
+        "brandClaim": "einfach persönlicher",
+        "page": "Seite",
+        "pageOf": "von"
     }
 }
