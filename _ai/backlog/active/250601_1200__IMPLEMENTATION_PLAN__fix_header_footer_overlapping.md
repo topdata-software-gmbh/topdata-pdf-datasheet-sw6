@@ -722,7 +722,7 @@ Refactor the header and footer CSS styling to align with the new page-level marg
 </head>
 <body>
     <div class="footer-container">
-        <div>&copy; {{ "now"|date("Y") }} Focus Shop. All rights reserved.</div>
+        <div>&copy; {{ "now"|date("Y") }} Focus Shop</div>
         <div>{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }} | Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>
     </div>
 </body>

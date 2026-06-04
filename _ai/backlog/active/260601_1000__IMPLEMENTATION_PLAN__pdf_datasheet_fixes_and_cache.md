@@ -517,7 +517,7 @@ Adding page breaks for `.spec-card` and rendering secondary images.
     {% endif %}
 
     <div class="brand-footer">
-        <div>&copy; {{ "now"|date("Y") }} Focus Shop. All rights reserved.</div>
+        <div>&copy; {{ "now"|date("Y") }} Focus Shop</div>
         <div>{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }}</div>
     </div>
 </div>

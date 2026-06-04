@@ -384,7 +384,7 @@ We will now create the header and footer templates for the `focus_shop` design, 
 </head>
 <body>
     <div class="footer-container">
-        <div>&copy; {{ "now"|date("Y") }} Focus Shop. All rights reserved.</div>
+        <div>&copy; {{ "now"|date("Y") }} Focus Shop</div>
         <div>{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }} | Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>
     </div>
 </body>

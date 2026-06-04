@@ -850,7 +850,7 @@ The core focus shop brand layout designed using **Poppins** headings, **Roboto**
     {% endif %}
 
     <div class="brand-footer">
-        <div>&copy; {{ "now"|date("Y") }} Focus Shop. All rights reserved.</div>
+        <div>&copy; {{ "now"|date("Y") }} Focus Shop</div>
         <div>{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }}</div>
     </div>
 </div>
