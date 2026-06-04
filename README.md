@@ -39,10 +39,11 @@ A **Shopware 6.7** plugin that generates beautiful, print-ready **PDF datasheets
 ### 1. Install the plugin
 
 ```bash
-# via Composer (if you manage plugins this way)
+# via Composer (add VCS repository first, then require)
+composer config repositories.topdata-pdf-datasheet-sw6 vcs https://github.com/topdata/pdf-datasheet-sw6
 composer require topdata/pdf-datasheet-sw6
 
-# or manually: download and place in custom/plugins/topdata-pdf-datasheet-sw6
+# or manually: clone/place this repo in custom/plugins/topdata-pdf-datasheet-sw6
 ```
 
 ### 2. Activate the plugin
