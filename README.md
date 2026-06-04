@@ -15,7 +15,6 @@ A **Shopware 6.7** plugin that generates beautiful, print-ready **PDF datasheets
 
 - **SEO-friendly PDF URLs** — `GET /datasheet/{productNumber}/{slug}.pdf`
 - **Two built-in themes** — `minimal` (clean, compact) and `focus_shop` (brand corporate design)
-- **Configurable margins** — set top/bottom/left/right margins via admin panel
 - **PDF download button** — automatically added to the product detail page buy widget
 - **HTTP caching** — 24-hour max-age with cache-busting per theme + product
 - **Debug mode** — append `?debug=1` to inspect the raw HTML before PDF conversion
@@ -103,10 +102,6 @@ After activation, configure the plugin in the Shopware admin under **Settings �
 | Gotenberg URL      | `http://localhost:3000` | Base URL of your Gotenberg Docker instance    |
 | PDF Theme          | `focus_shop`          | Template theme (`minimal` or `focus_shop`)    |
 | Cache enabled      | `true`                | Enable HTTP caching for PDF routes            |
-| Margin top         | `0.75 in`             | Top margin                                   |
-| Margin bottom      | `0.75 in`             | Bottom margin                                |
-| Margin left        | `0.5 in`              | Left margin                                  |
-| Margin right       | `0.5 in`              | Right margin                                 |
 
 ---
 
@@ -171,13 +166,6 @@ topdata-pdf-datasheet-sw6/
 2. Use any CSS features — Chromium supports CSS Grid, Flexbox, custom fonts, `@page`, etc.
 3. Images must be inlined via the `|pdf_base64_image` Twig filter (the Chromium sandbox has no network access)
 4. Register your theme name in `config.xml` under the `pdfTheme` select options
-5. To keep your custom header/footer layout aligned with the margins configured in the plugin config, use the injected `margins` variable to style the horizontal padding of your body elements:
-   ```css
-   body {
-       padding-left: {{ margins.marginLeft|default(0.75) }}in;
-       padding-right: {{ margins.marginRight|default(0.75) }}in;
-   }
-   ```
 
 ---
 

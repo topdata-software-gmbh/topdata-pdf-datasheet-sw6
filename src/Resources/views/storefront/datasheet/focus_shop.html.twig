@@ -7,7 +7,7 @@
     <style>
         @page {
             size: A4;
-            margin: 0; /* Core Fix: Prevents Chromium from adding implicit print margins */
+            margin: 0;
         }
         body {
             font-family: 'Roboto', sans-serif;
@@ -15,9 +15,7 @@
             color: #494e50;
             line-height: 1.6;
             margin: 0;
-            padding: 0;
             background-color: #ffffff;
-            border: 3px solid #fd7e14 !important; /* Debug: Orange border on main document body */
             box-sizing: border-box;
         }
         h1, h2, h3, h4 {
@@ -29,7 +27,6 @@
         .container {
             max-width: 100%;
             margin: 0 auto;
-            border: 2px dashed #ffc107 !important; /* Debug: Yellow dashed border on inner container */
             box-sizing: border-box;
         }
         .flex-row {

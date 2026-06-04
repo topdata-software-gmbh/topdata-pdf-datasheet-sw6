@@ -67,13 +67,6 @@ class PdfDatasheetController extends StorefrontController
             return new Response('Gotenberg Service URL is not configured.', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $margins = [
-            'marginTop' => $this->systemConfigService->getFloat('TopdataPdfDatasheetSW6.config.marginTop', $salesChannelId) ?: 1.2,
-            'marginBottom' => $this->systemConfigService->getFloat('TopdataPdfDatasheetSW6.config.marginBottom', $salesChannelId) ?: 1.0,
-            'marginLeft' => $this->systemConfigService->getFloat('TopdataPdfDatasheetSW6.config.marginLeft', $salesChannelId) ?: 0.75,
-            'marginRight' => $this->systemConfigService->getFloat('TopdataPdfDatasheetSW6.config.marginRight', $salesChannelId) ?: 0.75,
-        ];
-
         $templatePath = sprintf('@TopdataPdfDatasheetSW6/storefront/datasheet/%s.html.twig', $theme);
         $headerTemplatePath = sprintf('@TopdataPdfDatasheetSW6/storefront/datasheet/%s_header.html.twig', $theme);
         $footerTemplatePath = sprintf('@TopdataPdfDatasheetSW6/storefront/datasheet/%s_footer.html.twig', $theme);
@@ -87,8 +80,7 @@ class PdfDatasheetController extends StorefrontController
         try {
             $headerHtml = $this->renderView($headerTemplatePath, [
                 'product' => $product,
-                'context' => $context,
-                'margins' => $margins
+                'context' => $context
             ]);
         } catch (\Throwable) {
             // Header template does not exist or failed to render
@@ -98,8 +90,7 @@ class PdfDatasheetController extends StorefrontController
         try {
             $footerHtml = $this->renderView($footerTemplatePath, [
                 'product' => $product,
-                'context' => $context,
-                'margins' => $margins
+                'context' => $context
             ]);
         } catch (\Throwable) {
             // Footer template does not exist or failed to render
@@ -112,7 +103,7 @@ class PdfDatasheetController extends StorefrontController
         }
 
         try {
-            $pdfContent = $this->gotenbergClient->convertHtml($gotenbergUrl, $htmlContent, $margins, $headerHtml, $footerHtml);
+            $pdfContent = $this->gotenbergClient->convertHtml($gotenbergUrl, $htmlContent, $headerHtml, $footerHtml);
         } catch (\Throwable $e) {
             return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }

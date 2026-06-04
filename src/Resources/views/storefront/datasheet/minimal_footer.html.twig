@@ -5,14 +5,14 @@
     <style>
         body {
             margin: 0;
-            padding: 0 {{ margins.marginRight|default(0.75) }}in 20px {{ margins.marginLeft|default(0.75) }}in;
+            padding: 0 0 20px 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             font-size: 10px;
             color: #666666;
             width: 100%;
             box-sizing: border-box;
             -webkit-print-color-adjust: exact;
-            border: 3px solid #28a745 !important; /* Debug: Green border on footer viewport body */
+            /* Debug border removed after verification */
         }
         .footer-container {
             display: flex;
@@ -21,7 +21,6 @@
             border-top: 1px solid #dddddd;
             padding-top: 6px;
             width: 100%;
-            border: 1px dashed #20c997 !important; /* Debug: Mint dashed border on inner footer container */
             box-sizing: border-box;
         }
     </style>

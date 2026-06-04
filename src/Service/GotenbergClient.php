@@ -14,7 +14,6 @@ class GotenbergClient
     public function convertHtml(
         string $gotenbergUrl,
         string $htmlContent,
-        array $margins = [],
         string $headerHtml = '',
         string $footerHtml = ''
     ): string {
@@ -25,7 +24,7 @@ class GotenbergClient
             'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
         ];
 
-        $body = $this->buildMultipartBody($boundary, $htmlContent, $margins, $headerHtml, $footerHtml);
+        $body = $this->buildMultipartBody($boundary, $htmlContent, $headerHtml, $footerHtml);
 
         $response = $this->httpClient->request('POST', $endpoint, [
             'headers' => $headers,
@@ -46,7 +45,6 @@ class GotenbergClient
     private function buildMultipartBody(
         string $boundary,
         string $htmlContent,
-        array $margins,
         string $headerHtml = '',
         string $footerHtml = ''
     ): string {
@@ -72,13 +70,6 @@ class GotenbergClient
             $body .= "Content-Disposition: form-data; name=\"files\"; filename=\"footer.html\"\r\n";
             $body .= "Content-Type: text/html\r\n\r\n";
             $body .= $footerHtml . "\r\n";
-        }
-
-        // Margins and other configuration parameters
-        foreach ($margins as $key => $val) {
-            $body .= "--" . $boundary . "\r\n";
-            $body .= "Content-Disposition: form-data; name=\"" . $key . "\"\r\n\r\n";
-            $body .= $val . "\r\n";
         }
 
         $body .= "--" . $boundary . "--\r\n";
