@@ -12,21 +12,6 @@
             margin: 0;
             padding: 20px;
         }
-        .header {
-            border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-        }
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 0 5px 0;
-            color: #111;
-        }
-        .meta {
-            font-size: 12px;
-            color: #666;
-        }
         .grid {
             display: flex;
             gap: 40px;
@@ -94,16 +79,6 @@
     </style>
 </head>
 <body>
-
-    <div class="header">
-        <div class="title">{{ product.translated.name }}</div>
-        <div class="meta">
-            {{ "TopdataPdfDatasheetSW6.productNumber"|trans }}: {{ product.productNumber }}
-            {% if product.manufacturer %}
-                | {{ "TopdataPdfDatasheetSW6.manufacturer"|trans }}: {{ product.manufacturer.translated.name }}
-            {% endif %}
-        </div>
-    </div>
 
     <div class="grid">
         <div class="col-main">

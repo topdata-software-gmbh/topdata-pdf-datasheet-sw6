@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0 40px;
+            font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 9px;
+            color: #828384;
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #c7c8c8;
+            padding-top: 8px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="footer-container">
+        <div>&copy; {{ "now"|date("Y") }} Focus Shop. All rights reserved.</div>
+        <div>{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }} | Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>
+    </div>
+</body>
+</html>

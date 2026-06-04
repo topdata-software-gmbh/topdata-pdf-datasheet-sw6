@@ -28,31 +28,6 @@
             max-width: 100%;
             margin: 0 auto;
         }
-        .brand-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 3px solid #e96354;
-            padding-bottom: 15px;
-            margin-bottom: 35px;
-        }
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 32px;
-            color: #e96354;
-            line-height: 1;
-        }
-        .logo-text span {
-            color: #494e50;
-        }
-        .brand-claim {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-style: italic;
-            font-size: 14px;
-            color: #828384;
-        }
         .flex-row {
             display: flex;
             gap: 40px;
@@ -162,27 +137,11 @@
             font-weight: 500;
             color: #3c3e40;
         }
-        .brand-footer {
-            margin-top: 50px;
-            border-top: 1px solid #c7c8c8;
-            padding-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #828384;
-            break-inside: avoid;
-            page-break-inside: avoid;
-        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="brand-header">
-        <div class="logo-text">focus<span>shop</span></div>
-        <div class="brand-claim">{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }}</div>
-    </div>
-
     <div class="flex-row">
         <div class="flex-col-left">
             <span class="product-badge">{{ "TopdataPdfDatasheetSW6.titleText"|trans }}</span>
@@ -231,11 +190,6 @@
             {% endfor %}
         </div>
     {% endif %}
-
-    <div class="brand-footer">
-        <div>&copy; {{ "now"|date("Y") }} Focus Shop. All rights reserved.</div>
-        <div>{{ "TopdataPdfDatasheetSW6.brandClaim"|trans }}</div>
-    </div>
 </div>
 
 </body>

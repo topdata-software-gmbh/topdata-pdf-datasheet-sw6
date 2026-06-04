@@ -75,11 +75,33 @@ class PdfDatasheetController extends StorefrontController
         ];
 
         $templatePath = sprintf('@TopdataPdfDatasheetSW6/storefront/datasheet/%s.html.twig', $theme);
+        $headerTemplatePath = sprintf('@TopdataPdfDatasheetSW6/storefront/datasheet/%s_header.html.twig', $theme);
+        $footerTemplatePath = sprintf('@TopdataPdfDatasheetSW6/storefront/datasheet/%s_footer.html.twig', $theme);
 
         $htmlContent = $this->renderView($templatePath, [
             'product' => $product,
             'context' => $context
         ]);
+
+        $headerHtml = '';
+        try {
+            $headerHtml = $this->renderView($headerTemplatePath, [
+                'product' => $product,
+                'context' => $context
+            ]);
+        } catch (\Throwable) {
+            // Header template does not exist or failed to render
+        }
+
+        $footerHtml = '';
+        try {
+            $footerHtml = $this->renderView($footerTemplatePath, [
+                'product' => $product,
+                'context' => $context
+            ]);
+        } catch (\Throwable) {
+            // Footer template does not exist or failed to render
+        }
 
         if ($request->query->has('debug')) {
             $debugFile = $this->cacheDir . '/topdata_pdf_datasheet_debug.html';
@@ -88,7 +110,7 @@ class PdfDatasheetController extends StorefrontController
         }
 
         try {
-            $pdfContent = $this->gotenbergClient->convertHtml($gotenbergUrl, $htmlContent, $margins);
+            $pdfContent = $this->gotenbergClient->convertHtml($gotenbergUrl, $htmlContent, $margins, $headerHtml, $footerHtml);
         } catch (\Throwable $e) {
             return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }

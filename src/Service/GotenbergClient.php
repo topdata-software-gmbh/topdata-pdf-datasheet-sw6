@@ -14,7 +14,9 @@ class GotenbergClient
     public function convertHtml(
         string $gotenbergUrl,
         string $htmlContent,
-        array $margins = []
+        array $margins = [],
+        string $headerHtml = '',
+        string $footerHtml = ''
     ): string {
         $endpoint = rtrim($gotenbergUrl, '/') . '/forms/chromium/convert/html';
 
@@ -23,7 +25,7 @@ class GotenbergClient
             'Content-Type' => 'multipart/form-data; boundary=' . $boundary,
         ];
 
-        $body = $this->buildMultipartBody($boundary, $htmlContent, $margins);
+        $body = $this->buildMultipartBody($boundary, $htmlContent, $margins, $headerHtml, $footerHtml);
 
         $response = $this->httpClient->request('POST', $endpoint, [
             'headers' => $headers,
@@ -41,15 +43,38 @@ class GotenbergClient
         return $response->getContent();
     }
 
-    private function buildMultipartBody(string $boundary, string $htmlContent, array $margins): string
-    {
+    private function buildMultipartBody(
+        string $boundary,
+        string $htmlContent,
+        array $margins,
+        string $headerHtml = '',
+        string $footerHtml = ''
+    ): string {
         $body = '';
 
+        // Main index.html
         $body .= "--" . $boundary . "\r\n";
         $body .= "Content-Disposition: form-data; name=\"files\"; filename=\"index.html\"\r\n";
         $body .= "Content-Type: text/html\r\n\r\n";
         $body .= $htmlContent . "\r\n";
 
+        // Header HTML if provided
+        if (!empty($headerHtml)) {
+            $body .= "--" . $boundary . "\r\n";
+            $body .= "Content-Disposition: form-data; name=\"files\"; filename=\"header.html\"\r\n";
+            $body .= "Content-Type: text/html\r\n\r\n";
+            $body .= $headerHtml . "\r\n";
+        }
+
+        // Footer HTML if provided
+        if (!empty($footerHtml)) {
+            $body .= "--" . $boundary . "\r\n";
+            $body .= "Content-Disposition: form-data; name=\"files\"; filename=\"footer.html\"\r\n";
+            $body .= "Content-Type: text/html\r\n\r\n";
+            $body .= $footerHtml . "\r\n";
+        }
+
+        // Margins and other configuration parameters
         foreach ($margins as $key => $val) {
             $body .= "--" . $boundary . "\r\n";
             $body .= "Content-Disposition: form-data; name=\"" . $key . "\"\r\n\r\n";
