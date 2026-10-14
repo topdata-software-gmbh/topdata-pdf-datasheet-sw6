@@ -5,7 +5,8 @@ createdAt: 2026-10-14 19:23
 createdBy: opencode [deepseek-v4.1-flash]
 updatedAt: 2026-10-14 19:23
 updatedBy: opencode [deepseek-v4.1-flash]
-status: draft
+status: completed
+completedAt: 2026-10-14 20:54
 priority: high
 tags: [shopware, gotenberg, pdf-datasheet, database, performance, bugfix]
 project: "SW6.7 Plugin"
@@ -251,6 +252,7 @@ updatedBy: opencode [deepseek-v4.1-flash]
 planFile: "_ai/backlog/active/261014_1923__IMPLEMENTATION_PLAN__close_db_connection_before_gotenberg.md"
 project: "SW6.7 Plugin"
 status: completed
+completedAt: 2026-10-14 20:54
 filesCreated: 0
 filesModified: 3
 filesDeleted: 0
