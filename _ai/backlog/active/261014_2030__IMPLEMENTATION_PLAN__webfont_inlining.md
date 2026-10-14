@@ -3,14 +3,14 @@ filename: "_ai/backlog/active/261014_2030__IMPLEMENTATION_PLAN__webfont_inlining
 title: "Inline Google web fonts into PDF datasheets with fully automatic lazy caching (single-flight, atomic, degrade-safe)"
 createdAt: 2026-10-14 20:30
 createdBy: opencode [deepseek-v4.1-flash]
-updatedAt: 2026-10-14 20:30
+updatedAt: 2026-10-14 20:49
 updatedBy: opencode [deepseek-v4.1-flash]
 status: draft
-priority: high
+priority: medium
 tags: [shopware, gotenberg, pdf-datasheet, fonts, performance, resilience]
 project: "SW6.7 Plugin"
 estimatedComplexity: moderate
-documentRevision: 1
+documentRevision: 2
 documentType: IMPLEMENTATION_PLAN
 ---
 
@@ -24,29 +24,35 @@ documentType: IMPLEMENTATION_PLAN
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 ```
 
-During the crawl on 14/Oct/2026 (13:26–13:29), the Docker network had **no egress**. Chromium inside
-Gotenberg hung on the unreachable stylesheet, which caused:
+Every PDF render makes Chromium inside Gotenberg fetch the stylesheet and font files from Google
+before it can finish the page — per-render external work (DNS + TLS + CSS + up to 6 woff2 downloads)
+and a hard runtime dependency. Live systems have full internet access, so this normally goes
+unnoticed; if Google is ever slow or unreachable (outage, rate limit, firewall/DNS change), Chromium
+blocks on the stylesheet until it gives up. That failure mode was reproduced on the local clone
+during a crawl on 14/Oct/2026 (13:26–13:29), where the network had no egress:
 
 - render latencies of 6.42 s / 8.12 s / 9.54 s in the Gotenberg access log,
 - two `20.098s → 503 context deadline exceeded` (API timeout),
-- a `500` response for `/fr/datasheet/4952/…` on the storefront side.
+- a `500` response for `/fr/datasheet/4952/…` on the storefront side,
+- MariaDB `Too many connections` once enough waiting requests held their connections.
 
-Measured against the live stack (warm Gotenberg):
+Measured on the local clone (warm Gotenberg):
 
-| Test HTML | No egress | Egress available |
+| Test HTML | Stylesheet unreachable | Stylesheet reachable |
 | --- | --- | --- |
 | Plain page | 0.25–0.27 s | 0.28 s |
 | + Google Fonts `<link>` | **8.27 s** (DNS hang) | 0.29–0.31 s |
 | 6 latin faces inlined as base64 | 0.29 s | 0.28 s |
 
-So today the font link is fast *if* egress works — and catastrophic if it doesn't. The goal is to make
-PDF rendering independent of runtime egress while keeping the Google `<link>` in the template source:
+The goal: keep the Google `<link>` in the template source, but fetch it **once** (lazily, fully
+automatically) and inline the fonts as base64, so every render is deterministic and network-free —
+regardless of Google's availability or latency:
 
 - On every render, find the Google Fonts link in the rendered HTML.
 - Look up a cached, base64-inlined CSS blob keyed by `hash('xxh128', $url)` on disk.
 - On miss: **one** request per URL fetches the CSS + woff2 files (single-flight via `flock`), rewrites
   every `url()` to a `data:` URI, and stores the blob atomically.
-- On failure (egress down, cold cache): strip the `<link>` and render with system fonts — never hang.
+- On failure (Google unreachable, cold cache): strip the `<link>` and render with system fonts — never hang.
 - Fully automatic: no command, no deploy step, no admin setting. A template edit that changes the URL
   is picked up on the next render (new hash → refetch).
 
@@ -58,7 +64,7 @@ PDF rendering independent of runtime egress while keeping the Google `<link>` in
 - `hash('xxh128', …)` available (verified in `focus-www`: `bbea3d27e854d647520186bedb2eb9a0` for the current URL).
 - `Psr\Log\LoggerInterface` is a valid autowirable service (`vendor/shopware/core/Framework/DependencyInjection/cache.xml:52`).
 - Only `focus_shop.html.twig` contains the font link; `minimal*.twig` and all `*_header/_footer` templates have none.
-- Both containers currently have egress (TCP + HTTP verified), but this must not be a runtime requirement.
+- Live systems always have egress; the local clone did not at measurement time. Rendering must not depend on it.
 
 ### Why this variant (not a processed Twig template)
 
@@ -351,7 +357,7 @@ class WebFontInliner
 - **Bounded waiting**: concurrent requests poll ≤ 3 s (30 × 100 ms, with `clearstatcache`) for the blob
   or the failure marker, then degrade by stripping the link.
 - **Negative cache**: `.failed` marker suppresses refetch attempts for 300 s (protects against retry
-  storms while egress is down).
+  storms while Google is unreachable).
 - **No external requests possible**: every `url()` is rewritten to a `data:` URI and the result is
   rejected if any `http(s)` `url()` remains.
 - **Degrade-safe**: any failure returns `null` → the link is stripped → template CSS falls back to
@@ -430,9 +436,9 @@ Add under "Conventions and gotchas":
 > The blob is fetched lazily on first use and cached in
 > `%kernel.project_dir%/var/topdata_pdf_datasheet/webfonts/<xxh128(url)>.css` (persistent, not wiped by
 > `cache:clear`). Concurrent cold-cache requests are serialized with `flock`; on fetch failure the link
-> is stripped and system fonts are used (never let Chromium wait on the network — the 14/Oct/2026
-> incident: 8–20 s hangs and 503s when egress was unavailable). Keep the Google `<link>` in the
-> template; do not remove the inliner call.
+> is stripped and system fonts are used (never let Chromium wait on the network — an unreachable
+> stylesheet was reproduced locally as 8–20 s render hangs, 503s, and MariaDB connection pile-up).
+> Keep the Google `<link>` in the template; do not remove the inliner call.
 
 ### Phase 5: Verification
 
@@ -511,8 +517,8 @@ Notes (Phase 5 commands with observed outputs), Documentation Updates, Next Step
 | Case | Behavior |
 | --- | --- |
 | Concurrent cold start (crawler storm) | One fetcher; others poll ≤ 3 s then use the blob |
-| Egress down, cold cache | `.failed` marker, link stripped, warning logged; request finishes in < 1 s |
-| Egress down, warm cache | Cache hit; zero impact |
+| Google unreachable, cold cache | `.failed` marker, link stripped, warning logged; request finishes in < 1 s |
+| Google unreachable, warm cache | Cache hit; zero impact |
 | Retry storm during outage | `.failed` marker blocks refetch attempts for 300 s |
 | Corrupt/empty blob on disk | `isValidBlob()` fails → treated as miss → refetch |
 | Template edit changes font URL | New xxh128 key → automatic refetch on next render |
