@@ -9,6 +9,13 @@
         <!-- Gotenberg Service Integration -->
         <service id="Topdata\TopdataPdfDatasheetSW6\Service\GotenbergClient" public="true"/>
 
+        <!-- Web font inlining (lazy, single-flight, degrade-safe) -->
+        <service id="Topdata\TopdataPdfDatasheetSW6\Service\WebFontInliner">
+            <argument type="service" key="$httpClient" id="Symfony\Contracts\HttpClient\HttpClientInterface"/>
+            <argument type="service" key="$logger" id="Psr\Log\LoggerInterface"/>
+            <argument type="string" key="$cacheDir">%kernel.project_dir%/var/topdata_pdf_datasheet/webfonts</argument>
+        </service>
+
         <!-- Custom Twig Utilities -->
         <service id="Topdata\TopdataPdfDatasheetSW6\Twig\PdfHelperExtension">
             <argument type="service" id="shopware.filesystem.public"/>

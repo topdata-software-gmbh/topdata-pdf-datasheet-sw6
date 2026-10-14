@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Topdata\TopdataPdfDatasheetSW6\Service\GotenbergClient;
+use Topdata\TopdataPdfDatasheetSW6\Service\WebFontInliner;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
@@ -23,6 +24,7 @@ class PdfDatasheetController extends StorefrontController
         private readonly SalesChannelRepository $productRepository,
         private readonly GotenbergClient $gotenbergClient,
         private readonly SystemConfigService $systemConfigService,
+        private readonly WebFontInliner $webFontInliner,
         private readonly Connection $connection,
         private readonly string $cacheDir
     ) {}
@@ -111,6 +113,8 @@ class PdfDatasheetController extends StorefrontController
         if ($this->connection->isConnected() && $this->connection->getTransactionNestingLevel() === 0) {
             $this->connection->close();
         }
+
+        $htmlContent = $this->webFontInliner->inline($htmlContent);
 
         try {
             $pdfContent = $this->gotenbergClient->convertHtml($gotenbergUrl, $htmlContent, $headerHtml, $footerHtml);
