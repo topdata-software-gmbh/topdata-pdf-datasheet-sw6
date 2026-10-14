@@ -2,6 +2,7 @@
 
 namespace Topdata\TopdataPdfDatasheetSW6\Controller;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Product\Exception\ProductNotFoundException;
 use Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity;
 use Shopware\Core\System\SalesChannel\Entity\SalesChannelRepository;
@@ -22,6 +23,7 @@ class PdfDatasheetController extends StorefrontController
         private readonly SalesChannelRepository $productRepository,
         private readonly GotenbergClient $gotenbergClient,
         private readonly SystemConfigService $systemConfigService,
+        private readonly Connection $connection,
         private readonly string $cacheDir
     ) {}
 
@@ -100,6 +102,14 @@ class PdfDatasheetController extends StorefrontController
             $debugFile = $this->cacheDir . '/topdata_pdf_datasheet_debug.html';
             @file_put_contents($debugFile, $htmlContent);
             return new Response($htmlContent, Response::HTTP_OK, ['Content-Type' => 'text/html']);
+        }
+
+        // The DAL connection is process-wide and stays open in Sleep during the
+        // Gotenberg wait. Nothing after this point needs the DB; any later query
+        // reconnects lazily. Guard required: DBAL 4 close() silently resets the
+        // transaction nesting level without rollback.
+        if ($this->connection->isConnected() && $this->connection->getTransactionNestingLevel() === 0) {
+            $this->connection->close();
         }
 
         try {

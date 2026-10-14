@@ -39,6 +39,7 @@ Renders a Twig template per product into HTML, sends it to Gotenberg's `/forms/c
 - **HTTP cache**: when `cacheEnabled=true`, the response sets `Cache-Control: public, max-age=86400, s-maxage=86400` and `sw-cache-hash: md5(productNumber . theme)`. Shopware's HTTP cache uses this hash — changing `pdfTheme` for a product effectively busts the HTTP cache too.
 - **Product lookup**: `loadProductByNumber` adds associations `media.media`, `cover.media`, `properties.group`, `manufacturer`. Templates can rely on these; do not strip them.
 - **Controller is registered `public="true"`** in `services.xml` — needed because it's a storefront controller route target.
+- **DB connection is closed before the Gotenberg call** (`PdfDatasheetController.php`, right before `convertHtml()`). This releases the process-wide `Doctrine\DBAL\Connection` during the 6–20 s blocking render and prevents MariaDB `Too many connections` under crawler load. It is guarded by `isConnected()` + `getTransactionNestingLevel() === 0`; any DB query after the close transparently reconnects. Do not remove.
 
 ## Commands and operations
 
