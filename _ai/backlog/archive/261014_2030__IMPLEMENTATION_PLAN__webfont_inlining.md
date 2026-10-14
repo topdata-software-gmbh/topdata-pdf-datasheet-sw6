@@ -5,7 +5,8 @@ createdAt: 2026-10-14 20:30
 createdBy: opencode [deepseek-v4.1-flash]
 updatedAt: 2026-10-14 20:49
 updatedBy: opencode [deepseek-v4.1-flash]
-status: draft
+status: completed
+completedAt: 2026-10-14 21:12
 priority: medium
 tags: [shopware, gotenberg, pdf-datasheet, fonts, performance, resilience]
 project: "SW6.7 Plugin"
@@ -500,6 +501,7 @@ updatedBy: opencode [deepseek-v4.1-flash]
 planFile: "_ai/backlog/active/261014_2030__IMPLEMENTATION_PLAN__webfont_inlining.md"
 project: "SW6.7 Plugin"
 status: completed
+completedAt: 2026-10-14 21:12
 filesCreated: 1
 filesModified: 3
 filesDeleted: 0
